@@ -88,7 +88,7 @@ public class Vormerkkarte
     }
     
     /**
-     * Löscht einen Vormerker der Schlange.
+     * Löscht einen Vormerker wenn der Schlange.
      * 
      * 
      * @require vormerker != null

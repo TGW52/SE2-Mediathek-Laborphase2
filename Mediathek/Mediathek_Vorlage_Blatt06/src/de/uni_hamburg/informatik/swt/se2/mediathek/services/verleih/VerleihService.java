@@ -228,7 +228,7 @@ public interface VerleihService extends ObservableService
      * @ensure (result != null)
      */
     Verleihkarte getVerleihkarteFuer(Medium medium);
-    
+
     /**
      * Prueft ob ein Medium vorgemerkt ist
      * 
@@ -239,7 +239,7 @@ public interface VerleihService extends ObservableService
      * @ensure result =! null
      */
     boolean istVorgemerkt(Medium medium);
-    
+
     /**
      * 
      * @param medium das passende Medium
@@ -251,5 +251,28 @@ public interface VerleihService extends ObservableService
      * @ensure result != null
      */
     Vormerkkarte getVormerkkarte(Medium medium);
-    
+
+    /** Überprüft, ob eine Vormerkung durch den Kunden für die übergebenen Medien möglich ist.
+     * 
+     * @param kunde
+     * @param medien
+     * @return
+     * 
+     * @require kundeImBestand(kunde)
+     * @require medienImBestand(medien)
+     * 
+     * @ensure result != null
+     */
+    boolean istVormerkungMoeglich(Kunde kunde, List<Medium> medien);
+
+    /**
+     *  Merkt Medien fuer einen ausgewaehlten Kunden vor
+     *  
+     * @param medien
+     * @param kunde
+     * 
+     * @require kundeImBestand(kunde)
+     */
+    void merkeVor(Kunde kunde, List<Medium> medien);
+
 }

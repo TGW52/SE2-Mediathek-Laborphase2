@@ -3,11 +3,9 @@ package de.uni_hamburg.informatik.swt.se2.mediathek.ui.vormerken;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JPanel;
 
-import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Vormerkkarte;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Kunde;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.medien.Medium;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.ServiceObserver;
@@ -60,7 +58,6 @@ public class VormerkWerkzeug
      */
     private KundenDetailAnzeigerWerkzeug _kundenDetailAnzeigerWerkzeug;
 
-	
     /**
      * Initialisiert ein neues VormerkWerkzeug. Es wird die Benutzungsoberfläche
      * mit den Ausleihaktionen erzeugt, Beobachter an den Services registriert
@@ -215,22 +212,13 @@ public class VormerkWerkzeug
         // TODO für Aufgabenblatt 6 (nicht löschen): Prüfung muss noch eingebaut
         // werden. Ist dies korrekt implementiert, wird der Vormerk-Button gemäß
         // der Anforderungen a), b), c) und e) aktiviert.
-        
-        
-        
-        boolean vormerkenMoeglich = (kunde != null) && !medien.isEmpty();
-        for(Medium medium : medien)
-    	{
-	    	ArrayBlockingQueue<Kunde> vormerker = _verleihService.getVormerkkarte(medium).getVormerkerSchlange();
-	    	if(vormerker.contains(kunde) && (vormerker.remainingCapacity() == 0))
-	    	{
-	    		return false;
-	    	}
-    	}
+
+        boolean vormerkenMoeglich = (kunde != null) && !medien.isEmpty()
+                && _verleihService.istVormerkungMoeglich(kunde, medien);
+
         return vormerkenMoeglich;
     }
-    
-    
+
     /**
      * Merkt die ausgewählten Medien für einen Kunden vor. Diese Methode wird
      * über einen Listener angestoßen, der reagiert, wenn der Benutzer den
@@ -243,27 +231,8 @@ public class VormerkWerkzeug
             .getSelectedMedien();
         Kunde selectedKunde = _kundenAuflisterWerkzeug.getSelectedKunde();
         // TODO für Aufgabenblatt 6 (nicht löschen): Vormerken einbauen
-        
-        if (istVormerkenMoeglich())
-        for (Medium medium : selectedMedien)
-        {
-        	merkeVor(medium, selectedKunde);
-        }
 
-    }
-    
- 
-    
-    /**
-     *  Merkt ein Medium fuer einen ausgewaehlten Kunden vor
-     *  
-     * @param medium
-     * @param kunde
-     */
-    private void merkeVor(Medium medium, Kunde kunde)
-    {
-    	_verleihService.getVormerkkarte(medium).addVormerker(kunde);
-    	registriereUIAktionen();
+        _verleihService.merkeVor(selectedKunde, selectedMedien);
     }
 
     /**

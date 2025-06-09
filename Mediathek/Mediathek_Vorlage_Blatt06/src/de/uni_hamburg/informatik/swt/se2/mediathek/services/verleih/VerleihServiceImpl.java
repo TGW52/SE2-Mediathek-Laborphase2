@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 
-import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Vormerkkarte;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Kunde;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Verleihkarte;
+import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Vormerkkarte;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.medien.Medium;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.AbstractObservableService;
 import de.uni_hamburg.informatik.swt.se2.mediathek.services.kundenstamm.KundenstammService;
@@ -60,7 +61,7 @@ public class VerleihServiceImpl extends AbstractObservableService
      * @require initialBestand != null
      * @require initialVormerkkartenBestand != null
      */
-    
+
     public VerleihServiceImpl(KundenstammService kundenstamm,
             MedienbestandService medienbestand,
             List<Verleihkarte> initialBestand)
@@ -73,7 +74,7 @@ public class VerleihServiceImpl extends AbstractObservableService
         _kundenstamm = kundenstamm;
         _medienbestand = medienbestand;
         _protokollierer = new VerleihProtokollierer();
-       
+
     }
 
     /**
@@ -89,10 +90,10 @@ public class VerleihServiceImpl extends AbstractObservableService
         }
         return result;
     }
-    
-     /**
-     * Erzeugt eine neue HashMap aus dem Initialvormerkkartenbestand.
-     */
+
+    /**
+    * Erzeugt eine neue HashMap aus dem Initialvormerkkartenbestand.
+    */
     private HashMap<Medium, Vormerkkarte> erzeugeVormerkkartenBestand(
             List<Medium> medienbestand)
     {
@@ -125,7 +126,7 @@ public class VerleihServiceImpl extends AbstractObservableService
                 kunde) : "Vorbedingung verletzt: kundeImBestand(kunde)";
         assert medienImBestand(
                 medien) : "Vorbedingung verletzt: medienImBestand(medien)";
-                
+
         for (Medium medium : medien)
         {
             if (istVerliehen(medium))
@@ -133,9 +134,10 @@ public class VerleihServiceImpl extends AbstractObservableService
                 return false;
             }
 
-			//Änderung durchgeführt!
+            //Änderung durchgeführt!
             Vormerkkarte vormerkkarte = _vormerkkarten.get(medium);
-            if (vormerkkarte != null && !vormerkkarte.getVormerkerSchlange().isEmpty())
+            if (vormerkkarte != null && !vormerkkarte.getVormerkerSchlange()
+                .isEmpty())
             {
                 // Nur der erste Vormerker darf ausleihen
                 if (!kunde.equals(vormerkkarte.getErsterVormerker()))
@@ -336,22 +338,62 @@ public class VerleihServiceImpl extends AbstractObservableService
         }
         return result;
     }
-   
+
     // TODO Operationen
     @Override
     public boolean istVorgemerkt(Medium medium)
     {
 
-    assert mediumImBestand(medium) : "Vorbedingung verletzt: mediumExistiert(medium)";
-    return _vormerkkarten.get(medium).getErsterVormerker() != null;
-    
+        assert mediumImBestand(
+                medium) : "Vorbedingung verletzt: mediumExistiert(medium)";
+        return _vormerkkarten.get(medium)
+            .getErsterVormerker() != null;
+
     }
 
     @Override
     public Vormerkkarte getVormerkkarte(Medium medium)
     {
-        assert istVorgemerkt(medium) : "Vorbedingung verletzt: istVorgemerkt(medium)";
         return _vormerkkarten.get(medium);
     }
-    
+
+    @Override
+    public boolean istVormerkungMoeglich(Kunde kunde, List<Medium> medien)
+    {
+        assert kundeImBestand(
+                kunde) : "Vorbedingung verletzt: kundeImBestand(kunde)";
+        assert medienImBestand(
+                medien) : "Vorbedingung verletzt: medienImBestand(medien)";
+
+        for (Medium medium : medien)
+        {
+            ArrayBlockingQueue<Kunde> vormerker = getVormerkkarte(medium)
+                .getVormerkerSchlange();
+            if (vormerker.contains(kunde)
+                    || (vormerker.remainingCapacity() == 0))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void merkeVor(Kunde kunde, List<Medium> medien)
+    {
+        assert kundeImBestand(
+                kunde) : "Vorbedingung verletzt: kundeImBestand(kunde)";
+        assert istVormerkungMoeglich(kunde,
+                medien) : "Vorbedingung verletzt:  istVerleihenMoeglich(kunde, medien)";
+
+        for (Medium medium : medien)
+        {
+            getVormerkkarte(medium).addVormerker(kunde);
+            // System.out.println(_verleihService.getVormerkkarte(medium).getVormerkerSchlange());
+        }
+        // System.out.println(_verleihService.getVormerkkarte(medium).getVormerkerSchlange());
+        informiereUeberAenderung();
+    }
+
 }
