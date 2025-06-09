@@ -1,8 +1,10 @@
 package de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten;
 
 import java.util.concurrent.ArrayBlockingQueue;
+
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.medien.Medium;
 
+// TODO Vormerkkarte
 /**
  * Mit Hilfe von Vormerkkarte werden beim Vormerken eines Mediums alle relevanten
  * Daten notiert.
@@ -19,7 +21,7 @@ public class Vormerkkarte
 
     // Eigenschaften einer Vormerkkarte
     private final Medium _medium;
-    private ArrayBlockingQueue<Kunde> _vormerkerSchlange; 
+    private ArrayBlockingQueue<Kunde> _vormerkerSchlange;
 
     /**
      * Initialisert eine neue Verleihkarte mit den gegebenen Daten.
@@ -37,14 +39,11 @@ public class Vormerkkarte
     public Vormerkkarte(Medium medium)
     {
         assert medium != null : "Vorbedingung verletzt: medium != null";
-        
+
         _medium = medium;
         _vormerkerSchlange = new ArrayBlockingQueue<>(3);
-        
+
     }
-
-   
-
 
     /**
      * Gibt das Medium, dessen Ausleihe auf der Karte vermerkt ist, zurück.
@@ -58,7 +57,7 @@ public class Vormerkkarte
         return _medium;
     }
 
-	/**
+    /**
      * Gibt die Vormerker eines Mediums zurück.
      * 
      * @return die Vormerker des Mediums.
@@ -69,7 +68,7 @@ public class Vormerkkarte
     {
         return _vormerkerSchlange;
     }
-    
+
     /**
      * Fügt einen Vormerker der Schlange hinzu.
      * 
@@ -79,14 +78,14 @@ public class Vormerkkarte
      */
     public void addVormerker(Kunde vormerker)
     {
-        
-       if(_vormerkerSchlange.size() < 3)
-       {
-        	_vormerkerSchlange.add(vormerker);
-        	
-       }
+
+        if (_vormerkerSchlange.size() < 3)
+        {
+            _vormerkerSchlange.add(vormerker);
+
+        }
     }
-    
+
     /**
      * Löscht einen Vormerker wenn der Schlange.
      * 
@@ -96,16 +95,13 @@ public class Vormerkkarte
      */
     public void removeVormerker(Kunde vormerker)
     {
-       if(_vormerkerSchlange.size() > 0)
-       {
-        	_vormerkerSchlange.remove(vormerker);
-        	
-       }
+        if (_vormerkerSchlange.size() > 0)
+        {
+            _vormerkerSchlange.remove(vormerker);
+
+        }
     }
-    
-    
-    
-    
+
     /**
      * Gibt alle Vormerker als Array der Laenge 3 zurueck
      * 
@@ -115,10 +111,10 @@ public class Vormerkkarte
      */
     public Kunde[] getVormerkerArray()
     {
-    	return _vormerkerSchlange.toArray(new Kunde[3]);
-    	
+        return _vormerkerSchlange.toArray(new Kunde[3]);
+
     }
-    
+
     /**
      * Gibt den ersten Vormerker der aktuellen Verleihkarte zurueck
      * 
@@ -126,13 +122,12 @@ public class Vormerkkarte
      * 
      * @ensure result =! null
      */
-    public Kunde getErsterVormerker ()
+    public Kunde getErsterVormerker()
     {
-    	return getVormerkerArray()[0];
+        return getVormerkerArray()[0];
     }
-    
 
-	/**
+    /**
     @Override
     public int hashCode()
     {
@@ -145,8 +140,8 @@ public class Vormerkkarte
         result = prime * result + ((_medium == null) ? 0 : _medium.hashCode());
         return result;
     }
-
-	
+    
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -154,17 +149,17 @@ public class Vormerkkarte
         if (obj instanceof Verleihkarte)
         {
             Verleihkarte other = (Verleihkarte) obj;
-
+    
             if (other.getAusleihdatum()
                 .equals(_ausleihdatum)
                     && other.getEntleiher()
                         .equals(_entleiher)
                     && other.getMedium()
                         .equals(_medium))
-
+    
                 result = true;
         }
         return result;
     }
-	*/
+    */
 }
