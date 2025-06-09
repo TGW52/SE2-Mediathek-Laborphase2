@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Vormerkkarte;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Kunde;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Verleihkarte;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.medien.Medium;
@@ -35,6 +36,8 @@ public class VerleihServiceImpl extends AbstractObservableService
      */
     private MedienbestandService _medienbestand;
 
+    private Map<Medium, Vormerkkarte> _vormerkkarten;
+
     /**
      * Der Kundenstamm.
      */
@@ -55,7 +58,9 @@ public class VerleihServiceImpl extends AbstractObservableService
      * @require kundenstamm != null
      * @require medienbestand != null
      * @require initialBestand != null
+     * @require initialVormerkkartenBestand != null
      */
+    
     public VerleihServiceImpl(KundenstammService kundenstamm,
             MedienbestandService medienbestand,
             List<Verleihkarte> initialBestand)
@@ -64,9 +69,11 @@ public class VerleihServiceImpl extends AbstractObservableService
         assert medienbestand != null : "Vorbedingung verletzt: medienbestand  != null";
         assert initialBestand != null : "Vorbedingung verletzt: initialBestand  != null";
         _verleihkarten = erzeugeVerleihkartenBestand(initialBestand);
+        _vormerkkarten = erzeugeVormerkkartenBestand(medienbestand.getMedien());
         _kundenstamm = kundenstamm;
         _medienbestand = medienbestand;
         _protokollierer = new VerleihProtokollierer();
+       
     }
 
     /**
@@ -79,6 +86,20 @@ public class VerleihServiceImpl extends AbstractObservableService
         for (Verleihkarte verleihkarte : initialBestand)
         {
             result.put(verleihkarte.getMedium(), verleihkarte);
+        }
+        return result;
+    }
+    
+     /**
+     * Erzeugt eine neue HashMap aus dem Initialvormerkkartenbestand.
+     */
+    private HashMap<Medium, Vormerkkarte> erzeugeVormerkkartenBestand(
+            List<Medium> medienbestand)
+    {
+        HashMap<Medium, Vormerkkarte> result = new HashMap<Medium, Vormerkkarte>();
+        for (Medium medium : medienbestand)
+        {
+            result.put(medium, new Vormerkkarte(medium));
         }
         return result;
     }
@@ -104,8 +125,27 @@ public class VerleihServiceImpl extends AbstractObservableService
                 kunde) : "Vorbedingung verletzt: kundeImBestand(kunde)";
         assert medienImBestand(
                 medien) : "Vorbedingung verletzt: medienImBestand(medien)";
+                
+        for (Medium medium : medien)
+        {
+            if (istVerliehen(medium))
+            {
+                return false;
+            }
 
-        return sindAlleNichtVerliehen(medien);
+			//Änderung durchgeführt!
+            Vormerkkarte vormerkkarte = _vormerkkarten.get(medium);
+            if (vormerkkarte != null && !vormerkkarte.getVormerkerSchlange().isEmpty())
+            {
+                // Nur der erste Vormerker darf ausleihen
+                if (!kunde.equals(vormerkkarte.getErsterVormerker()))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -296,5 +336,22 @@ public class VerleihServiceImpl extends AbstractObservableService
         }
         return result;
     }
+   
+    // TODO Operationen
+    @Override
+    public boolean istVorgemerkt(Medium medium)
+    {
 
+    assert mediumImBestand(medium) : "Vorbedingung verletzt: mediumExistiert(medium)";
+    return _vormerkkarten.get(medium).getErsterVormerker() != null;
+    
+    }
+
+    @Override
+    public Vormerkkarte getVormerkkarte(Medium medium)
+    {
+        assert istVorgemerkt(medium) : "Vorbedingung verletzt: istVorgemerkt(medium)";
+        return _vormerkkarten.get(medium);
+    }
+    
 }

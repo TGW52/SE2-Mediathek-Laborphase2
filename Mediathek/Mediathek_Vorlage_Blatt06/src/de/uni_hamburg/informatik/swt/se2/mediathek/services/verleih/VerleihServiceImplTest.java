@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Vormerkkarte;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Kunde;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.Verleihkarte;
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.medien.CD;
