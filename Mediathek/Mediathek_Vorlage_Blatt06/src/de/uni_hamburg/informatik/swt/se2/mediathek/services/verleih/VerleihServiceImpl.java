@@ -136,7 +136,7 @@ public class VerleihServiceImpl extends AbstractObservableService
 
             //Änderung durchgeführt!
             Vormerkkarte vormerkkarte = _vormerkkarten.get(medium);
-            if (vormerkkarte != null && !vormerkkarte.getVormerkerSchlange()
+            if (!vormerkkarte.getVormerkerSchlange()
                 .isEmpty())
             {
                 // Nur der erste Vormerker darf ausleihen
@@ -251,7 +251,7 @@ public class VerleihServiceImpl extends AbstractObservableService
 
             _verleihkarten.put(medium, verleihkarte);
             _vormerkkarten.get(medium)
-                .removeVormerker(kunde);
+                .removeVormerker(kunde); // TODO Aufruecken
             _protokollierer.protokolliere(
                     VerleihProtokollierer.EREIGNIS_AUSLEIHE, verleihkarte);
         }
@@ -376,6 +376,13 @@ public class VerleihServiceImpl extends AbstractObservableService
             {
                 return false;
             }
+            if (istVerliehen(medium))
+            {
+                if (getEntleiherFuer(medium).equals(kunde))
+                {
+                    return false;
+                }
+            }
         }
 
         return true;
@@ -387,7 +394,7 @@ public class VerleihServiceImpl extends AbstractObservableService
         assert kundeImBestand(
                 kunde) : "Vorbedingung verletzt: kundeImBestand(kunde)";
         assert istVormerkungMoeglich(kunde,
-                medien) : "Vorbedingung verletzt:  istVerleihenMoeglich(kunde, medien)";
+                medien) : "Vorbedingung verletzt:  istVormerkenMoeglich(kunde, medien)";
 
         for (Medium medium : medien)
         {

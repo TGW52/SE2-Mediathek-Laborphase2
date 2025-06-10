@@ -1,5 +1,10 @@
 package de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+
 import org.junit.Test;
 
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.medien.CD;
@@ -7,8 +12,6 @@ import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.medien.Medium;
 import de.uni_hamburg.informatik.swt.se2.mediathek.wertobjekte.Datum;
 import de.uni_hamburg.informatik.swt.se2.mediathek.wertobjekte.Geldbetrag;
 import de.uni_hamburg.informatik.swt.se2.mediathek.wertobjekte.Kundennummer;
-
-import static org.junit.Assert.*;
 
 public class VerleihkarteTest
 {

@@ -4,7 +4,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.medien.Medium;
 
-// TODO Vormerkkarte
 /**
  * Mit Hilfe von Vormerkkarte werden beim Vormerken eines Mediums alle relevanten
  * Daten notiert.
@@ -15,7 +14,6 @@ import de.uni_hamburg.informatik.swt.se2.mediathek.entitaeten.medien.Medium;
  * @version SoSe 2021
  */
 
-// TODO Neue Testklasse fuer Vormerkkarte
 public class Vormerkkarte
 {
 
@@ -78,6 +76,7 @@ public class Vormerkkarte
      */
     public void addVormerker(Kunde vormerker)
     {
+        assert vormerker != null : "Vorbedingung verletzt: vormerker != null";
 
         if (_vormerkerSchlange.size() < 3)
         {
@@ -95,6 +94,7 @@ public class Vormerkkarte
      */
     public void removeVormerker(Kunde vormerker)
     {
+        assert vormerker != null : "Vorbedingung verletzt: vormerker != null";
         if (_vormerkerSchlange.size() > 0)
         {
             _vormerkerSchlange.remove(vormerker);
@@ -124,7 +124,7 @@ public class Vormerkkarte
      */
     public Kunde getErsterVormerker()
     {
-        return getVormerkerArray()[0];
+        return _vormerkerSchlange.peek();
     }
 
     /**
