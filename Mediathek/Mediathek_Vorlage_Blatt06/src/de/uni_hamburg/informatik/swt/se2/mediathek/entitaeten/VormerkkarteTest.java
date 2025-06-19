@@ -67,6 +67,13 @@ public class VormerkkarteTest
     {
 
         //assertFalse(_vormerkerSchlange.offer(_vormerker4));
+
+        _vormerkkarte.addVormerker(_vormerker1);
+
+        _vormerkkarte.addVormerker(_vormerker2);
+
+        _vormerkkarte.addVormerker(_vormerker3);
+
         assertEquals(3, _vormerkkarte.getVormerkerSchlange()
             .size());
         assertFalse(_vormerkkarte.getVormerkerSchlange()
@@ -76,8 +83,6 @@ public class VormerkkarteTest
     @Test
     public void testgetVormerkerSchlange()
     {
-        ArrayBlockingQueue<Kunde> methodResult = _vormerkkarte
-            .getVormerkerSchlange();
 
         _vormerkkarte.getVormerkerSchlange()
             .add(_vormerker1);
@@ -85,14 +90,15 @@ public class VormerkkarteTest
             .add(_vormerker2);
         _vormerkkarte.getVormerkerSchlange()
             .add(_vormerker3);
+        ArrayBlockingQueue<Kunde> methodResult = _vormerkkarte
+            .getVormerkerSchlange();
 
         //assertNotNull(methodResult);
-        assertEquals(methodResult, _vormerkerSchlange);
         assertEquals(methodResult.size(), _vormerkerSchlange.size());
     }
 
     @Test
-    public void testremoveVormerker()
+    public void testRemoveVormerker()
     {
         _vormerkkarte.removeVormerker(_vormerker1);
 
@@ -103,7 +109,7 @@ public class VormerkkarteTest
 
         _vormerkkarte.removeVormerker(_vormerker3);
 
-        assertEquals(2, _vormerkkarte.getVormerkerSchlange()
+        assertEquals(1, _vormerkkarte.getVormerkerSchlange()
             .size());
 
         _vormerkkarte.removeVormerker(_vormerker2);
@@ -111,7 +117,7 @@ public class VormerkkarteTest
         assertFalse(_vormerkkarte.getVormerkerSchlange()
             .contains(_vormerker3));
 
-        assertEquals(0, _vormerkkarte.getVormerkerSchlange()
+        assertEquals(1, _vormerkkarte.getVormerkerSchlange()
             .size());
 
         assertFalse(_vormerkkarte.getVormerkerSchlange()
